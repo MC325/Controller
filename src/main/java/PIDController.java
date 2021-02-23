@@ -5,18 +5,9 @@ public class PIDController {
     double integral = 0;
     double previousTimeMs;
 
-    public PIDController() {
-    }
-
     public void setSetPoint(double setPoint) {
         this.setPoint = setPoint;
     }
-
-//    private void setSensorValue(double sensorValue) {
-//        //Sets prevents sensorValue from going over or under the maximum/minimum value
-//        bounds(-1.0,1.0,sensorValue);
-//        this.sensorValue = sensorValue;
-//    }
 
     public double updateControlValue(double sensorValue, double currentTimeMs) {
         this.sensorValue = bounds(-1.0, 1.0, sensorValue);
