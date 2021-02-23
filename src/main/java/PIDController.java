@@ -2,11 +2,15 @@ public class PIDController {
     double sensorValue;
     double setPoint;
 
-    public String hello () {
-        return "Hello world!";
+    public PIDController() {
     }
 
-    public PIDController (double sensorValue) {
+    public void setSetPoint(double setPoint) {
+        this.setPoint = setPoint;
+    }
+
+    private void setSensorValue(double sensorValue) {
+        //Sets prevents sensorValue from going over or under the maximum/minimum value
         if (sensorValue < -1.0) {
             sensorValue = -1.0;
         } else if (sensorValue > 1.0) {
@@ -15,11 +19,8 @@ public class PIDController {
         this.sensorValue = sensorValue;
     }
 
-    public void setSetPoint(double setPoint) {
-        this.setPoint = setPoint;
-    }
-
-    public double getControlValue() {
-        return (setPoint - sensorValue)/2.0;
+    public double updateControlValue(double sensorValue) {
+        setSensorValue(sensorValue);
+        return (setPoint - this.sensorValue) / 2.0;
     }
 }
