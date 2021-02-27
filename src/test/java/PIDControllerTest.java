@@ -45,31 +45,14 @@ public class PIDControllerTest {
         controller.setSetPoint(0.5);
 
         //Integral proportional to time (fixed sensorValue)
-
         for (int i = 1; i <= 20; i++) {
             controller.updateControlValue(0,i * 30);
             System.out.println(controller);
         }
         System.out.println("New Loop");
         for (int i = 1; i <= 40; i++) {
-            controller.updateControlValue(i * 0.05,6000 + (i * 30));
+            controller.updateControlValue(i * 0.05,600 + (i * 30));
             System.out.println(controller);
         }
-
-//        assertEquals(0.5, controller.updateControlValue(0, 0), 0.00001);
-//
-//        assertEquals(0.0, controller.getIntegral(),0.00001);
-//
-//        assertEquals(0.53, controller.updateControlValue(0, 30), 0.00001);
-//
-//        assertEquals(0.03, controller.getIntegral(),0.00001);
-//
-//        assertEquals(0.53, controller.updateControlValue(0, 10000), 0.00001);
-//
-//        assertEquals(0.0299999, controller.getIntegral(),0.00001);
-//
-//        assertEquals(0.530999, controller.updateControlValue(0, 10001), 0.00001);
-//
-//        assertEquals(0.03099, controller.getIntegral(),0.00001);
     }
 }
