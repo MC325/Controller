@@ -10,7 +10,7 @@ public class PIDController {
 
     double previousTimeMs = Double.NaN;
     double elapsedTimeSec;
-    double previousError = Double.NaN;
+    double previousSensorValue = Double.NaN;
 
     //Gain values: change to increase/decrease the influence each part of the PID controller has on the output
     double proportionalGain = 1.0;
@@ -28,8 +28,8 @@ public class PIDController {
 
         //The error term: the difference between the setPoint and the current position (sensorValue)
         error = setPoint - this.sensorValue;
-        if (Double.isNaN(previousError)) {
-            previousError = error;
+        if (Double.isNaN(previousSensorValue)) {
+            previousSensorValue = sensorValue;
         }
         if (Double.isNaN(previousTimeMs)) {
             previousTimeMs = currentTimeMs - 30;
@@ -42,18 +42,19 @@ public class PIDController {
         elapsedTimeSec = (currentTimeMs - previousTimeMs) / 1000;
         double integralDelta = error * elapsedTimeSec;
 
-        //The derivative component - CAN be outside -1.0 to 1.0 range: should we limit the value?
-        double deltaError = error - previousError;
+        //The derivative component: Applies derivative to sensorValue rather than the error, bypassing derivative kick
+        //Learn more about derivative kick here: https://apmonitor.com/pdc/index.php/Main/ProportionalIntegralDerivative
+        double deltaSensorValue = this.sensorValue - previousSensorValue;
         if (elapsedTimeSec == 0.0) {
-            if (deltaError < 0.0) {
-                derivative = Double.MIN_VALUE;
-            } else if (deltaError > 0.0) {
+            if (deltaSensorValue < 0.0) {
                 derivative = Double.MAX_VALUE;
+            } else if (deltaSensorValue > 0.0) {
+                derivative = Double.MIN_VALUE;
             } else {
                 derivative = 0.0;
             }
         } else {
-            derivative = deltaError / elapsedTimeSec;
+            derivative = - deltaSensorValue / elapsedTimeSec;
         }
 
         //Sums up all components of the PID controller and outputs the raw value
@@ -68,7 +69,7 @@ public class PIDController {
 
         integral += integralDelta;
         previousTimeMs = currentTimeMs;
-        previousError = error;
+        previousSensorValue = sensorValue;
         controlValue = bounds(-1.0, 1.0, preclampControlValue);
         return controlValue;
     }
